@@ -1,5 +1,5 @@
 package ie.gmit.studentmanager;
 
-public class Course {
+public class Memory {
 
 }

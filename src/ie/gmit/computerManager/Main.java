@@ -1,7 +1,10 @@
-package ie.gmit.studentmanager;
+package ie.gmit.computermanager;
 
 import java.io.File;
 import java.io.Serializable;
+
+import ie.gmit.studentmanager.Computer;
+
 import java.io.ObjectOutputStream;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
@@ -18,7 +21,7 @@ import javafx.stage.Stage;
 public class Main extends Application implements Serializable {
 
     private static final long serialVersionUID = 1L; // Used for serialization
-    StudentManager sm = new StudentManager(); // Used for managing students
+    ComputerManager cm = new ComputerManager(); // Used for managing computers
 
     @Override
     public void start(Stage primaryStage) {
@@ -27,87 +30,87 @@ public class Main extends Application implements Serializable {
         taMyOutput.setPrefHeight(100); // sets height of the TextArea to 400 pixels
         taMyOutput.setPrefWidth(100); // sets width of the TextArea to 300 pixels
 
-        // Show total number of students
-        Button btnShowTotal = new Button("Show Total Students");
-        TextField tfTotalNumberOfStudents = new TextField();
+        // Show total number of computers
+        Button btnShowTotal = new Button("Show Total Computers");
+        TextField tfTotalNumberOfComputers = new TextField();
 
-        tfTotalNumberOfStudents.setEditable(false); // This box is not editable. Only displays result.
-        tfTotalNumberOfStudents.setPromptText("0");
+        tfTotalNumberOfComputers.setEditable(false); // This box is not editable. Only displays result.
+        tfTotalNumberOfComputers.setPromptText("0");
 
         btnShowTotal.setOnAction(e -> {
 
             // Code to run when button is clicked
-            tfTotalNumberOfStudents.setText(Integer.toString(sm.findTotalStudents()));
+            tfTotalNumberOfComputers.setText(Integer.toString(cm.findTotalComputers()));
 
         });
 
-        // Add Student arrangement
-        Button btnAddStudent = new Button("Add Student");
-        TextField tfStudentID = new TextField();
+        // Add Computer arrangement
+        Button btnAddComputer = new Button("Add Computer");
+        TextField tfComputerID = new TextField();
 
-        tfStudentID.setPromptText("Enter Student ID");
+        tfComputerID.setPromptText("Enter Computer ID");
 
-        btnAddStudent.setOnAction(e -> {
-            if (tfStudentID.getText().trim().equals("")) { // If text field is empty
+        btnAddComputer.setOnAction(e -> {
+            if (tfComputerID.getText().trim().equals("")) { // If text field is empty
 
                 taMyOutput.setText("Invalid");
             } else {
 
-                Student student = new Student(tfStudentID.getText());
-                sm.addStudent(student); // Add student to student list
-                tfStudentID.clear();
+                Computer computer = new Computer(tfComputerID.getText());
+                cm.addComputer(computer); // Add computer to computer list
+                tfComputerID.clear();
             }
         });
 
-        // Delete Student arrangement
-        TextField tfStudentDel = new TextField();
-        Button btnDelStudent = new Button("Delete Student");
+        // Delete Computer arrangement
+        TextField tfComputerDel = new TextField();
+        Button btnDelComputer = new Button("Delete Computer");
 
-        tfStudentDel.setPromptText("Enter Student ID");
+        tfComputerDel.setPromptText("Enter Computer ID");
 
-        btnDelStudent.setOnAction(e -> {
+        btnDelComputer.setOnAction(e -> {
 
-            sm.deleteStudentById(tfStudentDel.getText());
+            cm.deleteComputerById(tfComputerDel.getText());
 
         });
 
         // Save to DB
-        Button btnSaveDB = new Button("Save Students to DB");
+        Button btnSaveDB = new Button("Save Computers to DB");
         btnSaveDB.setOnAction(e -> {
-            if (sm.findTotalStudents() > 0) {
+            if (cm.findTotalComputers() > 0) {
                 try {
-                    File studentDB = new File("./resources/studentsDB.ser");
-                    ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(studentDB));
-                    out.writeObject(sm);
+                    File computerDB = new File("./resources/computersDB.ser");
+                    ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(computerDB));
+                    out.writeObject(cm);
                     out.close();
-                    taMyOutput.setText("Student Database Saved");
+                    taMyOutput.setText("Computer Database Saved");
                 } catch (Exception exception) {
                     System.out.print("[Error] Cannont save DB. Cause: ");
                     exception.printStackTrace();
-                    taMyOutput.setText("ERROR: Failed to save Students DB!");
+                    taMyOutput.setText("ERROR: Failed to save Computers DB!");
                 }
             } else {
-                taMyOutput.setText("No Students in List to save!");
+                taMyOutput.setText("No Computers in List to save!");
             }
         });
 
         // Load from DB
-        Button btnLoadDB = new Button("Load Students from DB");
-        TextField tfLoadStudents = new TextField();
+        Button btnLoadDB = new Button("Load Computers from DB");
+        TextField tfLoadComputers = new TextField();
 
-        tfLoadStudents.setPromptText("Please enter DB path");
+        tfLoadComputers.setPromptText("Please enter DB path");
         btnLoadDB.setOnAction(e -> {
 
             try{
-                File studentDB = new File(tfLoadStudents.getText());
-                ObjectInputStream in = new ObjectInputStream(new FileInputStream(studentDB));
-                sm = (StudentManager) in.readObject();
+                File computerDB = new File(tfLoadComputers.getText());
+                ObjectInputStream in = new ObjectInputStream(new FileInputStream(computerDB));
+                cm = (ComputerManager) in.readObject();
                 in.close();
-                taMyOutput.setText("Successfully loaded Students from Database");
+                taMyOutput.setText("Successfully loaded Computers from Database");
             } catch (Exception exception) {
                     System.out.print("[Error] Cannont load DB. Cause: ");
                     exception.printStackTrace();
-                    taMyOutput.setText("ERROR: Failed to load Students DB!");
+                    taMyOutput.setText("ERROR: Failed to load Computers DB!");
             }
 
         });
@@ -120,15 +123,15 @@ public class Main extends Application implements Serializable {
 
         // Adding and arranging all the nodes in the grid - add(node, column, row)
         GridPane gridPane1 = new GridPane();
-        gridPane1.add(tfStudentID, 0, 0);
-        gridPane1.add(btnAddStudent, 1, 0);
+        gridPane1.add(tfComputerID, 0, 0);
+        gridPane1.add(btnAddComputer, 1, 0);
         gridPane1.add(btnShowTotal, 0, 1);
-        gridPane1.add(tfTotalNumberOfStudents, 1, 1);
-        gridPane1.add(tfStudentDel, 0, 2);
-        gridPane1.add(btnDelStudent, 1, 2);
+        gridPane1.add(tfTotalNumberOfComputers, 1, 1);
+        gridPane1.add(tfComputerDel, 0, 2);
+        gridPane1.add(btnDelComputer, 1, 2);
         gridPane1.add(btnSaveDB, 0, 3);
         gridPane1.add(btnLoadDB, 0, 4);
-        gridPane1.add(tfLoadStudents, 1, 4);
+        gridPane1.add(tfLoadComputers, 1, 4);
         gridPane1.add(taMyOutput, 0, 5, 2, 1);
         gridPane1.add(btnQuit, 0, 6);
 
@@ -138,7 +141,7 @@ public class Main extends Application implements Serializable {
         // Setting the title to Stage.
 
         if (getParameters().getRaw().size() == 0) {
-            primaryStage.setTitle("Student Manager Application");
+            primaryStage.setTitle("Computer Manager Application");
         } else {
             primaryStage.setTitle(getParameters().getRaw().get(0));
         }
